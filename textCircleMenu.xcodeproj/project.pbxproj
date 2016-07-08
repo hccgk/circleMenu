@@ -16,6 +16,8 @@
 		20837EB71D262039002285F9 /* textCircleMenuTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 20837EB61D262039002285F9 /* textCircleMenuTests.m */; };
 		20837EC21D262039002285F9 /* textCircleMenuUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 20837EC11D262039002285F9 /* textCircleMenuUITests.m */; };
 		20837ED11D26207B002285F9 /* actionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 20837ED01D26207B002285F9 /* actionButton.m */; };
+		20837EE01D2F876F002285F9 /* circleMenuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20837EDF1D2F876F002285F9 /* circleMenuManager.m */; };
+		20837EE41D2F980D002285F9 /* circleBackgrandView.m in Sources */ = {isa = PBXBuildFile; fileRef = 20837EE31D2F980D002285F9 /* circleBackgrandView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +56,10 @@
 		20837EC31D262039002285F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		20837ECF1D26207B002285F9 /* actionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = actionButton.h; sourceTree = "<group>"; };
 		20837ED01D26207B002285F9 /* actionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = actionButton.m; sourceTree = "<group>"; };
+		20837EDE1D2F876F002285F9 /* circleMenuManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = circleMenuManager.h; sourceTree = "<group>"; };
+		20837EDF1D2F876F002285F9 /* circleMenuManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = circleMenuManager.m; sourceTree = "<group>"; };
+		20837EE21D2F980D002285F9 /* circleBackgrandView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = circleBackgrandView.h; sourceTree = "<group>"; };
+		20837EE31D2F980D002285F9 /* circleBackgrandView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = circleBackgrandView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,8 +112,9 @@
 			children = (
 				20837E9F1D262039002285F9 /* AppDelegate.h */,
 				20837EA01D262039002285F9 /* AppDelegate.m */,
-				20837ECF1D26207B002285F9 /* actionButton.h */,
-				20837ED01D26207B002285F9 /* actionButton.m */,
+				20837EE11D2F97CC002285F9 /* circlemenu */,
+				20837EDE1D2F876F002285F9 /* circleMenuManager.h */,
+				20837EDF1D2F876F002285F9 /* circleMenuManager.m */,
 				20837EA21D262039002285F9 /* ViewController.h */,
 				20837EA31D262039002285F9 /* ViewController.m */,
 				20837EA51D262039002285F9 /* Main.storyboard */,
@@ -143,6 +150,17 @@
 				20837EC31D262039002285F9 /* Info.plist */,
 			);
 			path = textCircleMenuUITests;
+			sourceTree = "<group>";
+		};
+		20837EE11D2F97CC002285F9 /* circlemenu */ = {
+			isa = PBXGroup;
+			children = (
+				20837ECF1D26207B002285F9 /* actionButton.h */,
+				20837ED01D26207B002285F9 /* actionButton.m */,
+				20837EE21D2F980D002285F9 /* circleBackgrandView.h */,
+				20837EE31D2F980D002285F9 /* circleBackgrandView.m */,
+			);
+			name = circlemenu;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -279,6 +297,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				20837EA41D262039002285F9 /* ViewController.m in Sources */,
+				20837EE01D2F876F002285F9 /* circleMenuManager.m in Sources */,
+				20837EE41D2F980D002285F9 /* circleBackgrandView.m in Sources */,
 				20837EA11D262039002285F9 /* AppDelegate.m in Sources */,
 				20837E9E1D262039002285F9 /* main.m in Sources */,
 				20837ED11D26207B002285F9 /* actionButton.m in Sources */,
