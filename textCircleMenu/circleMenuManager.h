@@ -12,8 +12,9 @@
 
 
 @interface circleMenuManager : NSObject
-@property (nonatomic ,strong)circleBackgrandView *mainView;
+@property (nonatomic ,strong)circleBackgrandView *bcView;
 
 +(circleMenuManager *)sharedInstance;
 
+-(void)initWithCircle:(CGPoint)cHeart circleR:(CGFloat)cR buttonR:(CGFloat)butR buttonNum:(NSInteger)num;
 @end

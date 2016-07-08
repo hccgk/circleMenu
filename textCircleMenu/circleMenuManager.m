@@ -17,11 +17,12 @@
     NSMutableArray* buttArr;
     NSInteger times;
     NSTimer* timer1;
-    NSTimer *timerReduce;
+    NSTimer *timerReduce;//抬手以后的延迟时间
     CGFloat startY;
+    NSInteger buttonNumber;
+    CGPoint circleHeart; // 圆心
     CGFloat butweent; //人工计算出来的角度平均值,也就是间距  button 之间的间隔弧度
     CGFloat circleR; //圆的半径
-    CGFloat circleO; //圆心的Y坐标 ,默认圆心X坐标是0
     CGFloat buttonR; //按钮的半径
     NSMutableArray *circleArr;//关于弧度的数组
     CGFloat olddegreed;  //olddegreed 为滑动的角度 记录上一次滑动的距离 . 还需要留着 停止滑动的时候这个最为其实的绘制角度来用
@@ -44,31 +45,41 @@
     return circlemenu;
     
 }
+-(void)initWithCircle:(CGPoint)cHeart circleR:(CGFloat)cR buttonR:(CGFloat)butR buttonNum:(NSInteger)num{
+    circleHeart = cHeart;
+    circleR = cR;
+    buttonR = butR;
+    buttonNumber = num;
+    [self makeupUI];
+
+}
 
 - (instancetype)init {
     
-    _mainView = [[circleBackgrandView alloc]initWithFrame:CGRectMake(0, 0, kScreenW, kScreenH)];
-    _mainView.delegate = self;
-    circleR = kScreenH/2.0 - 80;
-    circleO = kScreenH/2.0;
-    buttonR = 80;
+    _bcView = [[circleBackgrandView alloc]initWithFrame:CGRectMake(0, 0, kScreenW, kScreenH)];
+    _bcView.delegate = self;
+//    circleR = kScreenH/2.0 - 180;
+//    circleHeart = CGPointMake(kScreenW/2.0, kScreenH/2.0);
+//    buttonR = 30;
     circleArr = [NSMutableArray array];
     degreedArrTwo = [NSMutableArray arrayWithCapacity:10];
     olddegreed = 0;
-    [self makeupUI];
+//    buttonNumber = 8;
 
     return self;
 }
+
+
 - (void)makeupUI
 {
     // 1.创建多个按钮的数组,button 有tag 以方便后边查找 star位置 都在屏幕外边
     buttArr = [NSMutableArray array];
     
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < buttonNumber; i++) {
         button = [[actionButton alloc]
-                  initWithFrame:CGRectMake(0, kScreenH + buttonR, buttonR, buttonR)];
+                  initWithFrame:CGRectMake(0, kScreenH + buttonR * 2, buttonR * 2, buttonR * 2)];
         [button setBackgroundColor:[self RandomColor]];
-        button.layer.cornerRadius = buttonR / 2.0;
+        button.layer.cornerRadius = buttonR ;
         [button.layer masksToBounds];
         button.tag = 10000 + i + 1;
         [button setTitle:[NSString stringWithFormat:@"Menu%d",i+1 ]forState:UIControlStateNormal];
@@ -78,7 +89,7 @@
         button.delegate = self;
         [buttArr addObject:button];
         
-        [_mainView addSubview:button];
+        [_bcView addSubview:button];
     }
     //按钮的间距
     butweent = M_PI * 2/ (buttArr.count);
@@ -109,22 +120,42 @@
     //根据角度来进行滑动,精细到每一次角度变化, 每次调用就不会重复叠加,视觉效果是和实际相同
     CGFloat degreed = 0;  //degreed 为滑动的角度
     //1.以开始点到圆心的距离为半径
-    CGFloat moveR = [self distanceFromePoint:prevLocation Point2:CGPointMake(0, circleO)];
+    CGFloat moveR = [self distanceFromePoint:prevLocation Point2:circleHeart];
     //2.根据圆心,半径,和已知的2个点求得旋转角度,传递过去,让绘图部分进行绘图
     //问题:不是真实的角度
     degreed = asinf([self distanceFromePoint:location Point2:prevLocation] / 2.0 / moveR) * 2.0;
     
-    //3.根据方向确定正负
+    //3.根据方向确定正负   //4.增加圆心左侧的判断 右侧是有区别的
+//    if (circleHeart.x <location.x && circleHeart.x <prevLocation.x) {
+//        if (location.y - prevLocation.y < -1) {
+//            degreed = -degreed;
+//        }
+//        else if (location.y - prevLocation.y > 1) {
+//            degreed = degreed;
+//        }
+//        else {
+//            return;
+//        }
+//    }else if(circleHeart.x > location.x && circleHeart.x > prevLocation.x){
+//        if (location.y - prevLocation.y < -1) {
+//            degreed = degreed;
+//        }
+//        else if (location.y - prevLocation.y > 1) {
+//            degreed = -degreed;
+//        }
+//        else {
+//            return;
+//        }
+//    } else{
+//        degreed = olddegreed;
+//    }
+//
+
+    //TODO: 判断正负
+
     
-    if (location.y - prevLocation.y < -1) {
-        degreed = -degreed;
-    }
-    else if (location.y - prevLocation.y > 1) {
-        degreed = degreed;
-    }
-    else {
-        return;
-    }
+    
+    
     //4.普通加速判断处理  滑动的时候  2种加速一种在滑动的时候,一种是离开的时候
     if (olddegreed < degreed) {
         //加速处理函数 调用动画方法一定的时间  系数根据情况增加或者减少
@@ -144,21 +175,25 @@
     //往数组里面 以此添加degreed
     
     [degreedArrTwo addObject:@(degreed)];
+    
     if (degreedArrTwo.count > 9) {
         [degreedArrTwo removeObjectAtIndex:0];
     }
     //    Olddegreend = degreed;
-    //    NSLog(@"xxxxxxxxxxxxxxxMMMMM::%f",degreed);
     for (int i = 0; i < buttArr.count; i++) {
         
         actionButton* btnNew = buttArr[i]; //获取的方式不是使用tag 是使用数组中的位置
         CGFloat startCircleArg = [circleArr[i] floatValue] ;
         
-        
-        CGFloat endX = sin(startCircleArg + degreed) * circleR;
-        CGFloat endY = circleO - cos(startCircleArg + degreed) * circleR;
+
         
         
+        
+        
+        
+        CGFloat endX = sin(startCircleArg + degreed) * circleR + circleHeart.x;
+        CGFloat endY = circleHeart.y - cos(startCircleArg + degreed) * circleR;
+
         [circleArr setObject:@(startCircleArg + degreed) atIndexedSubscript:i];
         
         
@@ -197,13 +232,6 @@
 - (void)movepoint:(NSTimer*)timer
 {
     
-    //    NSDate *currentDate = [NSDate date];//获取当前时间，日期
-    //    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    ////    [dateFormatter setDateFormat:@"YYYY/MM/dd hh:mm:ss SS"];
-    //    [dateFormatter setDateFormat:@"ssSS" ];
-    //    NSString *dateString = [dateFormatter stringFromDate:currentDate];
-    //    NSLog(@"dateString:%@",dateString);
-    
     if (times == buttArr.count) {
         
         
@@ -215,11 +243,11 @@
     //endarc
     CGFloat endarc = -M_PI_2 *3 + (times +1) * butweent;
     
-    if (times +1 >(buttArr.count)/2.0 -1) {
+    if (times +1 >0) {
         // 增加移动路径
         CGMutablePathRef path = CGPathCreateMutable();
         //动画路径
-        CGPathAddArc(path, NULL, 0, circleO, circleR,M_PI_2 *1.1,
+        CGPathAddArc(path, NULL, circleHeart.x, circleHeart.y, circleR,M_PI_2 *1.1,
                      endarc , YES);
         //按着移动路径移动
         CAKeyframeAnimation* animationbegain =
@@ -234,25 +262,23 @@
         [btn.layer addAnimation:animationbegain forKey:@"curve"];
         
     }
-    
-    
-    
+
     [circleArr addObject:@(endarc +M_PI_2)];
     
     CGFloat centerX;
     CGFloat centerY;
     if (endarc < - M_PI) {//左下
-        centerX = - sin(M_PI_2 *3 + endarc) * circleR;
-        centerY =  cos(M_PI_2 *3 + endarc) * circleR +circleO;
+        centerX = - sin(M_PI_2 *3 + endarc) * circleR + circleHeart.x;
+        centerY =  cos(M_PI_2 *3 + endarc) * circleR +circleHeart.y;
     }else if (endarc < - M_PI_2){//左上
-        centerX = - sin(-M_PI_2  - endarc) * circleR;
-        centerY = - cos(-M_PI_2  - endarc) * circleR +circleO;
+        centerX = - sin(-M_PI_2  - endarc) * circleR + circleHeart.x;
+        centerY = - cos(-M_PI_2  - endarc) * circleR +circleHeart.y;
     }else if (endarc < 0){//右上
-        centerX = sin(endarc + M_PI_2) * circleR;
-        centerY = - cos(endarc + M_PI_2) * circleR +circleO;
+        centerX = sin(endarc + M_PI_2) * circleR + circleHeart.x;
+        centerY = - cos(endarc + M_PI_2) * circleR +circleHeart.y;
     }else{//右下
-        centerX = sin(M_PI_2 -endarc) * circleR;
-        centerY = cos(M_PI_2 -endarc) * circleR +circleO;
+        centerX = sin(M_PI_2 -endarc) * circleR +circleHeart.x;
+        centerY = cos(M_PI_2 -endarc) * circleR +circleHeart.y;
     }
     
     btn.center = CGPointMake(centerX, centerY);
@@ -292,9 +318,13 @@
     [self redrawed:olddegreed];
     
 }
+//TODO: 写代理方法,让引用的控制器使用
 #pragma - mark 点击按钮
 - (void)clickButton:(actionButton*)btn
 {
+    
+    
+    
     switch (btn.tag - 10000) {
         case 1:
             NSLog(@"1 click");
@@ -349,6 +379,8 @@
     CGFloat blue = (arc4random() % 155) / 155.0;
     return [UIColor colorWithRed:red green:green blue:blue alpha:1];
 }
+
+//2点之间距离 NO! 不这样干 还是在角度启动之前做 带有正负也就是顺时针逆时针的方向
 
 -(CGFloat)distanceFromePoint:(CGPoint)point1 Point2:(CGPoint)point2{
     
