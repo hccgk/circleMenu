@@ -16,7 +16,7 @@
 - (void)viewDidLoad
 {
     UIView *cv = [circleMenuManager sharedInstance].bcView;
-    [[circleMenuManager sharedInstance] initWithCircle:CGPointMake(kScreenW/2.0, kScreenH/2.0) circleR:150 buttonR:30 buttonNum:8];
+    [[circleMenuManager sharedInstance] initWithCircle:CGPointMake(kScreenW, kScreenH/2.0) circleR:150 buttonR:36 buttonNum:8];
     [self.view addSubview:cv];
     [self.view setUserInteractionEnabled:YES];
 }
